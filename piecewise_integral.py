@@ -45,18 +45,18 @@ fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
 
 
 for c in range(0, 1):
-    # print('\n===========\n')
+    print('\n===========\n')
     # print('c:', c)
 
     for i in range(0, sub_intervals):
         a = x_start + i * width
         b = a + width
-        slope_f_x = 1 + i
+        linspace_segment = int(i * (precision / sub_intervals))
+        slope_f_x = f_function[linspace_segment]
         # print('a, b:', a, b)
-        # print('slope_f_x:', slope_f_x)
+        print('slope_f_x:', slope_f_x)
         integral_piece = AntiDerivativePolyCoefficients(x_domain, [c, slope_f_x], a, b)
         ax1.plot(x_domain, integral_piece, color=f"#FF{i % 10}500")
-
 # FUNCTION PLOT
 ax2.plot(x_domain, f_function)
 
