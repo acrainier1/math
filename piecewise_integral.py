@@ -15,23 +15,27 @@ def PolyCoefficients(x, coefficents):
 
     return y
 
-def AntiDerivativePolyCoefficients(x, coefficents, a, width):
+def AntiDerivativePolyCoefficients(x, coefficents, a, b):
     y = PolyCoefficients(x, coefficents)
 
     for i, y_i in enumerate(y):
-        if x[i] < a or x[i] >= a + width:
+        if x[i] < a or x[i] >= b:
             y[i] = None
 
     return y
 
 
 # FUNCTION
-x_start = -20
-x_end = 20
-x_domain = np.linspace(x_start, x_end, 100000)
+x_start = -10
+x_end = 10
+precision = 100000
+x_domain = np.linspace(x_start, x_end, precision)
 coefficents = [0, 0, 1]
 f_function = PolyCoefficients(x_domain, coefficents)
-
+domain = x_end - x_start
+sub_intervals = 20
+width = domain // sub_intervals
+print('domain, width:', domain, width)
 
 # INTEGRAL
 
@@ -39,21 +43,24 @@ f_function = PolyCoefficients(x_domain, coefficents)
 # INTEGRAL PLOT
 fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
 
-for c in range(0, 3, 1):
-    domain = x_end - x_start
-    sub_intervals = 40
-    width = domain // sub_intervals
-    # print(domain, width)
 
-    for a in range(x_start, x_end, width):
-        # print(c, a)
-        integral_piece = AntiDerivativePolyCoefficients(x_domain, [c, 1 + a, 0], a, width)
-        ax1.plot(x_domain, integral_piece, color='#FFA500')
+for c in range(0, 1):
+    # print('\n===========\n')
+    # print('c:', c)
+
+    for i in range(0, sub_intervals):
+        a = x_start + i * width
+        b = a + width
+        slope_f_x = 1 + i
+        # print('a, b:', a, b)
+        # print('slope_f_x:', slope_f_x)
+        integral_piece = AntiDerivativePolyCoefficients(x_domain, [c, slope_f_x], a, b)
+        ax1.plot(x_domain, integral_piece, color=f"#FF{i % 10}500")
 
 # FUNCTION PLOT
 ax2.plot(x_domain, f_function)
 
-# plt.ylim(-10, 10)
+plt.ylim(-10, 10)
 plt.tight_layout()
 plt.show()
 
