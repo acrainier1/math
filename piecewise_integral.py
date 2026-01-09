@@ -22,7 +22,6 @@ def AntiDerivativePolyCoefficients(x, coefficents, a, width):
         if x[i] < a or x[i] >= a + width:
             y[i] = None
 
-    print(len(y))
     return y
 
 
@@ -31,6 +30,7 @@ x_start = -20
 x_end = 20
 x_domain = np.linspace(x_start, x_end, 100000)
 coefficents = [0, 0, 1]
+f_function = PolyCoefficients(x_domain, coefficents)
 
 
 # INTEGRAL
@@ -40,16 +40,17 @@ coefficents = [0, 0, 1]
 fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
 
 for c in range(0, 3, 1):
-    domain = x_start - x_end
+    domain = x_end - x_start
     sub_intervals = 40
     width = domain // sub_intervals
+    # print(domain, width)
 
     for a in range(x_start, x_end, width):
-        integral_piece = AntiDerivativePolyCoefficients(x_domain, [c, 1, 0], a, width)
+        # print(c, a)
+        integral_piece = AntiDerivativePolyCoefficients(x_domain, [c, 1 + a, 0], a, width)
         ax1.plot(x_domain, integral_piece, color='#FFA500')
 
 # FUNCTION PLOT
-f_function = PolyCoefficients(x_domain, coefficents)
 ax2.plot(x_domain, f_function)
 
 # plt.ylim(-10, 10)
