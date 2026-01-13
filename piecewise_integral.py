@@ -27,6 +27,7 @@ def AntiDerivativePolyCoefficients(x, coefficents, a, b):
 def PiecePolyCoefficients(x, y, a, i):
     left_endpoint = (i - 1) * a
     right_endpoint = i * a
+    print (left_endpoint, right_endpoint)
 
     for i, y_i in enumerate(y):
         if x[i] < left_endpoint or x[i] >= right_endpoint:
@@ -46,7 +47,6 @@ sub_intervals = 5
 width = domain // sub_intervals
 print('domain:', domain, 'width:', width)
 
-# INTEGRAL
 
 # INTEGRAL PLOT
 fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
@@ -54,23 +54,14 @@ fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
 ax1.plot(x_domain, PolyCoefficients(x_domain, [0, 0, 0, 1/3]))
 plt.ylim(-10, 10)
 
-# for c in range(-100, 100):
-#     # print('\n===========\n')
-#     # print('c:', c)
-#     for i in range(0, sub_intervals):
-#         a = x_start + (i * width)
-#         b = a + width
-#         # print('a, b:', a, b)
-#         linspace_segment = int(i * (precision / sub_intervals))
-#         slope_f_x = f_function[linspace_segment]
-#         # print('slope_f_x:', slope_f_x)
-#         integral_piece = AntiDerivativePolyCoefficients(x_domain, [c, slope_f_x], a, b)
-#         ax1.plot(x_domain, integral_piece, color=f"#FF{i % 10}500")
 
-F_i_minus_1 = PolyCoefficients(x_domain, [0])
-a = 1
+# INTEGRAL CALCULATION
+a = 1 # interval width
+c = 0 # y intercept
+F_i_minus_1 = PolyCoefficients(x_domain, [c])
 
-for i in range(1, sub_intervals + 1):
+
+for i in range(0, sub_intervals):
 
     ia = int(i * (precision / sub_intervals))
     slope_f_x = f_function[ia]
@@ -79,7 +70,7 @@ for i in range(1, sub_intervals + 1):
     c = (-1 * slope_f_x) + F_i_minus_1[ia]
 
     F_integral = PolyCoefficients(x_domain, [c, slope_f_x])
-    integral_piece = PiecePolyCoefficients(x_domain, F_integral, a, i)
+    integral_piece = PiecePolyCoefficients(x_domain, F_integral, a, i + 1)
 
     ax1.plot(x_domain, integral_piece, color=f"#FF{i % 10}500")
 
@@ -93,24 +84,15 @@ plt.ylim(-10, 10)
 plt.tight_layout()
 plt.show()
 
-
-
-# x_test = np.linspace(-1, 1, 100)
-# y = 0
-# for i in range(3):
-#     y += 5 * (x_test ** 2)
-
-# print('test:', x_test)
-# print('\n===================\ny:', y)
-
-# sub_domain = 0
-# sub_domain += 5 * (x_test ** 2)
-# c=0
-
-# for i, x in enumerate(sub_domain):
-#     if x < 0 or x >= 1:
-#         sub_domain[i] = 0
-#         c+=1
-
-# print(len(x_test), len(sub_domain), c)
-# print('\n===================\nsub_domain:', sub_domain)
+# for c in range(-100, 100):
+#     # print('\n===========\n')
+#     # print('c:', c)
+#     for i in range(0, sub_intervals):
+#         a = x_start + (i * width)
+#         b = a + width
+#         # print('a, b:', a, b)
+#         linspace_segment = int(i * (precision / sub_intervals))
+#         slope_f_x = f_function[linspace_segment]
+#         # print('slope_f_x:', slope_f_x)
+#         integral_piece = AntiDerivativePolyCoefficients(x_domain, [c, slope_f_x], a, b)
+#         ax1.plot(x_domain, integral_piece, color=f"#FF{i % 10}500")
