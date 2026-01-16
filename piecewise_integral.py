@@ -44,18 +44,28 @@ x_domain = np.linspace(x_start, x_end, precision)
 coefficents = [0, 0, 1]
 f_function = PolyCoefficients(x_domain, coefficents)
 domain = x_end - x_start
-sub_intervals = 500
+sub_intervals = 50
 
-area_under_curve = (1/3) * (x_end ** 3)
+f = lambda x: x ** 2
+integral = lambda x: (1/3) * (x ** 3)
+
+area_under_curve = integral(x_end) - integral(x_start)
 computed_areas = []
 difference_in_areas = []
 print(area_under_curve)
 
-for i in range(0, sub_intervals):
-    computed_area = 0
-    computed_areas.append(computed_area)
-    difference_in_areas.append(area_under_curve - computed_area)
+a = domain / sub_intervals # interval width
+b = 0 # constant of integration 
+F_i_minus_1 = lambda x: f(0) * x + b
 
+for i in range(0, sub_intervals):
+    c = F_i_minus_1(i * a)
+    F_i = lambda x: (x - (i * a)) * f(i * a) + c
+
+    value = F_i(i * a)
+    print(value)
+
+    F_i_minus_1 = F_i
 
 
 # INTEGRAL PLOT
@@ -64,15 +74,15 @@ fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
 # ax1.plot(x_domain, PolyCoefficients(x_domain, [0, 0, 0, 1/3]))
 
 integral_x_axis = list(range(sub_intervals))
-ax1.plot(integral_x_axis, computed_areas, color='#FFA500')
-ax1.plot(integral_x_axis, difference_in_areas, color='#00A500')
+# ax1.plot(integral_x_axis, computed_areas, color='#FFA500')
+# ax1.plot(integral_x_axis, difference_in_areas, color='#00A500')
 
 
 # INTEGRAL CALCULATION
-a = domain / sub_intervals # interval width
-c = 0 # y intercept
-F_i_minus_1 = PolyCoefficients(x_domain, [c])
-print('domain:', domain, 'width a:', a)
+# a = domain / sub_intervals # interval width
+# c = 0 # y intercept
+# F_i_minus_1 = PolyCoefficients(x_domain, [c])
+# print('domain:', domain, 'width a:', a)
 
 # for i in range(0, sub_intervals):
 #     ia = int(i * (precision / sub_intervals))
