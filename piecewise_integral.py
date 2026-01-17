@@ -58,7 +58,7 @@ def copy_func(f):
 f = lambda x: x ** 2
 a = 0
 b = 5
-c = 0 # constant of integration
+# c = 0 # constant of integration
 sub_intervals = 50
 interval = b - a
 # d = interval / sub_intervals # interval width
@@ -81,7 +81,6 @@ ax2.plot(x_domain, PolyCoefficients(x_domain, [0, 0, 0, 1/3]))
 integral = lambda x: (1/3) * (x ** 3)
 area_under_curve = integral(b) - integral(a)
 computed_areas = [0]
-difference_in_areas = []
 print('True area under curve:\n', area_under_curve)
 
 # F_i_minus_1 = lambda x: f(a) * x  + c
@@ -90,6 +89,7 @@ print('True area under curve:\n', area_under_curve)
 # print('==========\n')
 
 for s in range(1, sub_intervals):
+    c = 0 # constant of integration
     F_i_minus_1 = lambda x: f(a) * x  + c
     F_i = lambda x: x
     d = interval / s # interval width
@@ -111,12 +111,16 @@ for s in range(1, sub_intervals):
     # print('Computed area under curve:\n', F_i(b))
 
 computed_x_axis = list(range(sub_intervals))
-print(computed_areas)
-# print(computed_x_axis)
 area_under_curve_constant = [area_under_curve] * sub_intervals
+# difference_in_areas = [a - b for a, b in zip(computed_areas, area_under_curve_constant)]
+
+ax3.set_title('True area vs computed areas under curve')
+ax3.set_xlabel('Number of subintervals')
 ax3.plot(computed_x_axis, area_under_curve_constant, color='#4444AA')
 ax3.plot(computed_x_axis, computed_areas, color='#FFA500')
-# ax3.plot(computed_x_axis, difference_in_areas, color='#00A500')
+# ax3.plot(computed_x_axis, difference_in_areas, color='#44AA44')
+# ax3.spines['left'].set_position('center')
+# ax3.spines['bottom'].set_position('center')
 
 
 
