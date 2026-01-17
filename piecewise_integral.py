@@ -82,6 +82,7 @@ print(a, b, c, d)
 print('==========\n')
 
 for i in range(1, sub_intervals):
+    interval = i
     point = a + (i * d)
     c = F_i_minus_1(point)
     F_i = lambda x: f(point) * (x - a - (i * d)) + c
@@ -90,7 +91,6 @@ for i in range(1, sub_intervals):
     value = F_i(point)
     print(i, point, c, value)
 
-    interval = i
     F_i_minus_1 = lambda x: f(point) * (x - a - (interval * d)) + c
     # print(F_i_minus_1)
     # print('==========\n')
