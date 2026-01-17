@@ -58,11 +58,6 @@ def copy_func(f):
 f = lambda x: x ** 2
 a = 0
 b = 5
-# c = 0 # constant of integration
-sub_intervals = 50
-interval = b - a
-# d = interval / sub_intervals # interval width
-
 precision = 100000
 x_domain = np.linspace(-10, 10, precision)
 coefficents = [0, 0, 1]
@@ -81,6 +76,7 @@ ax2.plot(x_domain, PolyCoefficients(x_domain, [0, 0, 0, 1/3]))
 integral = lambda x: (1/3) * (x ** 3)
 area_under_curve = integral(b) - integral(a)
 computed_areas = [0]
+approximation_plots = []
 print('True area under curve:\n', area_under_curve)
 
 # F_i_minus_1 = lambda x: f(a) * x  + c
@@ -88,11 +84,17 @@ print('True area under curve:\n', area_under_curve)
 # print('a:', a, ' b:',  b, ' c:', c)
 # print('==========\n')
 
+interval = b - a
+sub_intervals = 1
+
 for s in range(1, sub_intervals):
     c = 0 # constant of integration
     F_i_minus_1 = lambda x: f(a) * x  + c
     F_i = lambda x: x
     d = interval / s # interval width
+
+    plot_values = []
+    # print('s', s)
 
     for i in range(1, s):
         p = a + (i * d)
@@ -100,6 +102,7 @@ for s in range(1, sub_intervals):
         F_i = lambda x: f(p) * (x - a - (i * d)) + c
 
         value = F_i(p)
+        plot_values.append(value)
         # print(i, p, c, value)
 
         subinterval = i
@@ -108,8 +111,10 @@ for s in range(1, sub_intervals):
         # print('==========\n')
 
     computed_areas.append(F_i(b))
+    approximation_plots.append(plot_values)
     # print('Computed area under curve:\n', F_i(b))
 
+print(len(computed_areas))
 computed_x_axis = list(range(sub_intervals))
 area_under_curve_constant = [area_under_curve] * sub_intervals
 # difference_in_areas = [a - b for a, b in zip(computed_areas, area_under_curve_constant)]
@@ -118,6 +123,8 @@ ax3.set_title('True area vs computed areas under curve')
 ax3.set_xlabel('Number of subintervals')
 ax3.plot(computed_x_axis, area_under_curve_constant, color='#4444AA')
 ax3.plot(computed_x_axis, computed_areas, color='#FFA500')
+
+print(approximation_plots)
 # ax3.plot(computed_x_axis, difference_in_areas, color='#44AA44')
 # ax3.spines['left'].set_position('center')
 # ax3.spines['bottom'].set_position('center')
