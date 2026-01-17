@@ -54,62 +54,73 @@ def copy_func(f):
     
     return g
 
-# FUNCTION
-x_start = 0
-x_end = 10
-precision = 100000
-x_domain = np.linspace(x_start, x_end, precision)
-coefficents = [0, 0, 1]
-f_function = PolyCoefficients(x_domain, coefficents)
-domain = x_end - x_start
-sub_intervals = 1000000
-
 
 f = lambda x: x ** 2
 a = 0
-b = 10
+b = 5
 c = 0 # constant of integration
-d = (b - a) / sub_intervals # interval width
+sub_intervals = 50
+interval = b - a
+# d = interval / sub_intervals # interval width
+
+precision = 100000
+x_domain = np.linspace(-10, 10, precision)
+coefficents = [0, 0, 1]
+f_function = PolyCoefficients(x_domain, coefficents)
+
+
+# FUNCTION PLOT
+fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1)
+ax1.set_title('Function')
+ax1.plot(x_domain, f_function)
+
+# INTEGRAL PLOT
+ax2.set_title('Integral')
+ax2.plot(x_domain, PolyCoefficients(x_domain, [0, 0, 0, 1/3]))
 
 integral = lambda x: (1/3) * (x ** 3)
 area_under_curve = integral(b) - integral(a)
-computed_areas = []
+computed_areas = [0]
 difference_in_areas = []
-print(area_under_curve)
+print('True area under curve:\n', area_under_curve)
 
-F_i_minus_1 = lambda x: f(a) * x  + c
-F_i = lambda x: x
-print(a, b, c, d)
-print('==========\n')
+# F_i_minus_1 = lambda x: f(a) * x  + c
+# F_i = lambda x: x
+# print('a:', a, ' b:',  b, ' c:', c)
+# print('==========\n')
 
-for i in range(1, sub_intervals):
-    p = a + (i * d)
-    c = F_i_minus_1(p)
-    F_i = lambda x: f(p) * (x - a - (i * d)) + c
-    # print(F_i)
+for s in range(1, sub_intervals):
+    F_i_minus_1 = lambda x: f(a) * x  + c
+    F_i = lambda x: x
+    d = interval / s # interval width
 
-    value = F_i(p)
-    # print(i, p, c, value)
+    for i in range(1, s):
+        p = a + (i * d)
+        c = F_i_minus_1(p)
+        F_i = lambda x: f(p) * (x - a - (i * d)) + c
 
-    interval = i
-    point = a + (interval * d)
-    F_i_minus_1 = lambda x: f(point) * (x - a - (interval * d)) + c
-    # print(F_i_minus_1)
-    # print('==========\n')
+        value = F_i(p)
+        # print(i, p, c, value)
 
-print(F_i(b))
+        subinterval = i
+        point = a + (subinterval * d)
+        F_i_minus_1 = lambda x: f(point) * (x - a - (subinterval * d)) + c
+        # print('==========\n')
 
-# INTEGRAL PLOT
-fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
+    computed_areas.append(F_i(b))
+    # print('Computed area under curve:\n', F_i(b))
 
-ax1.plot(x_domain, PolyCoefficients(x_domain, [0, 0, 0, 1/3]))
+computed_x_axis = list(range(sub_intervals))
+print(computed_areas)
+# print(computed_x_axis)
+area_under_curve_constant = [area_under_curve] * sub_intervals
+ax3.plot(computed_x_axis, area_under_curve_constant, color='#4444AA')
+ax3.plot(computed_x_axis, computed_areas, color='#FFA500')
+# ax3.plot(computed_x_axis, difference_in_areas, color='#00A500')
 
-integral_x_axis = list(range(sub_intervals))
-# ax1.plot(integral_x_axis, computed_areas, color='#FFA500')
-# ax1.plot(integral_x_axis, difference_in_areas, color='#00A500')
 
 
-# INTEGRAL CALCULATION
+# INTEGRAL SEGMENTS
 # a = domain / sub_intervals # interval width
 # c = 0 # y intercept
 # F_i_minus_1 = PolyCoefficients(x_domain, [c])
@@ -129,12 +140,9 @@ integral_x_axis = list(range(sub_intervals))
 #     F_i_minus_1 = F_integral
 
 
-# FUNCTION PLOT
-ax2.plot(x_domain, f_function)
-
-plt.ylim(-10, 10)
+# plt.ylim(-10, 10)
 plt.tight_layout()
-# plt.show()
+plt.show()
 
 # for c in range(-100, 100):
 #     # print('\n===========\n')
