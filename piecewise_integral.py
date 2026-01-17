@@ -87,16 +87,16 @@ print('True area under curve:\n', area_under_curve)
 interval = b - a
 sub_intervals = 5
 
-for s in range(1, sub_intervals + 1):
+for s in range(0, sub_intervals):
     c = 0 # constant of integration
     F_i_minus_1 = lambda x: f(a) * x  + c
     F_i = lambda x: x
-    d = interval / s # interval width
+    d = interval / (s + 1) # interval width
 
     plot_values = []
     # print('s', s)
 
-    for i in range(1, s):
+    for i in range(1, s + 1):
         p = a + (i * d)
         c = F_i_minus_1(p)
         F_i = lambda x: f(p) * (x - a - (i * d)) + c
