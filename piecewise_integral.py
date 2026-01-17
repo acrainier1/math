@@ -1,5 +1,8 @@
 import numpy as np
 from matplotlib import pyplot as plt
+import types
+import functools
+import copy
 
 def PolyCoefficients(x, coefficents):
     """ Returns a polynomial for ``x`` values for the ``coeffs`` provided.
@@ -35,6 +38,21 @@ def PiecePolyCoefficients(x, y, a, i):
 
     return y
 
+def copy_func(f):
+    """
+    Creates a deep copy of a function.
+    """
+    # Create a new function object using the original function's code and globals
+    g = types.FunctionType(f.__code__, f.__globals__, name=f.__name__, 
+                           argdefs=f.__defaults__, closure=f.__closure__)
+    
+    # Update the new function's wrapper to preserve metadata
+    g = functools.update_wrapper(g, f)
+    
+    # Explicitly copy the function's __dict__ to duplicate any custom attributes
+    g.__dict__ = copy.deepcopy(f.__dict__)
+    
+    return g
 
 # FUNCTION
 x_start = 0
@@ -44,34 +62,45 @@ x_domain = np.linspace(x_start, x_end, precision)
 coefficents = [0, 0, 1]
 f_function = PolyCoefficients(x_domain, coefficents)
 domain = x_end - x_start
-sub_intervals = 50
+sub_intervals = 5
 
-f = lambda x: x ** 2
+
 integral = lambda x: (1/3) * (x ** 3)
-
 area_under_curve = integral(x_end) - integral(x_start)
 computed_areas = []
 difference_in_areas = []
 print(area_under_curve)
 
-a = domain / sub_intervals # interval width
-b = 0 # constant of integration 
-F_i_minus_1 = lambda x: f(0) * x + b
+f = lambda x: x ** 2
+a = 0
+b = 5
+c = 0 # constant of integration
+d = (b - a) / sub_intervals # interval width
+F_i_minus_1 = lambda x: f(a) * x  + c
+print(a, b, c, d)
+print(F_i_minus_1)
+print('==========\n')
 
-for i in range(0, sub_intervals):
-    c = F_i_minus_1(i * a)
-    F_i = lambda x: (x - (i * a)) * f(i * a) + c
+for i in range(1, sub_intervals):
+    point = a + (i * d)
+    c = F_i_minus_1(point)
+    F_i = lambda x: f(point) * (x - a - (i * d)) + c
+    # def F_i(x):
+    #     return f(point) * (x - a - (i * d)) + c
+    print(F_i)
 
-    value = F_i(i * a)
-    print(value)
+    value = F_i(point)
+    print(i, point, c, value)
 
-    F_i_minus_1 = F_i
+    F_i_minus_1 = copy_func(F_i)
+    print(F_i_minus_1)
+    print('==========\n')
 
 
 # INTEGRAL PLOT
 fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
 
-# ax1.plot(x_domain, PolyCoefficients(x_domain, [0, 0, 0, 1/3]))
+ax1.plot(x_domain, PolyCoefficients(x_domain, [0, 0, 0, 1/3]))
 
 integral_x_axis = list(range(sub_intervals))
 # ax1.plot(integral_x_axis, computed_areas, color='#FFA500')
@@ -103,7 +132,7 @@ ax2.plot(x_domain, f_function)
 
 plt.ylim(-10, 10)
 plt.tight_layout()
-plt.show()
+# plt.show()
 
 # for c in range(-100, 100):
 #     # print('\n===========\n')
