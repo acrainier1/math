@@ -77,25 +77,25 @@ b = 5
 c = 0 # constant of integration
 d = (b - a) / sub_intervals # interval width
 F_i_minus_1 = lambda x: f(a) * x  + c
+F_i = lambda x: x
 print(a, b, c, d)
-print(F_i_minus_1)
 print('==========\n')
 
 for i in range(1, sub_intervals):
     point = a + (i * d)
     c = F_i_minus_1(point)
     F_i = lambda x: f(point) * (x - a - (i * d)) + c
-    # def F_i(x):
-    #     return f(point) * (x - a - (i * d)) + c
-    print(F_i)
+    # print(F_i)
 
     value = F_i(point)
     print(i, point, c, value)
 
-    F_i_minus_1 = copy_func(F_i)
-    print(F_i_minus_1)
-    print('==========\n')
+    interval = i
+    F_i_minus_1 = lambda x: f(point) * (x - a - (interval * d)) + c
+    # print(F_i_minus_1)
+    # print('==========\n')
 
+print(F_i(6))
 
 # INTEGRAL PLOT
 fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
