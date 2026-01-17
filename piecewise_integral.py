@@ -56,46 +56,48 @@ def copy_func(f):
 
 # FUNCTION
 x_start = 0
-x_end = 5
+x_end = 10
 precision = 100000
 x_domain = np.linspace(x_start, x_end, precision)
 coefficents = [0, 0, 1]
 f_function = PolyCoefficients(x_domain, coefficents)
 domain = x_end - x_start
-sub_intervals = 5
+sub_intervals = 1000000
 
+
+f = lambda x: x ** 2
+a = 0
+b = 10
+c = 0 # constant of integration
+d = (b - a) / sub_intervals # interval width
 
 integral = lambda x: (1/3) * (x ** 3)
-area_under_curve = integral(x_end) - integral(x_start)
+area_under_curve = integral(b) - integral(a)
 computed_areas = []
 difference_in_areas = []
 print(area_under_curve)
 
-f = lambda x: x ** 2
-a = 0
-b = 5
-c = 0 # constant of integration
-d = (b - a) / sub_intervals # interval width
 F_i_minus_1 = lambda x: f(a) * x  + c
 F_i = lambda x: x
 print(a, b, c, d)
 print('==========\n')
 
 for i in range(1, sub_intervals):
-    interval = i
-    point = a + (i * d)
-    c = F_i_minus_1(point)
-    F_i = lambda x: f(point) * (x - a - (i * d)) + c
+    p = a + (i * d)
+    c = F_i_minus_1(p)
+    F_i = lambda x: f(p) * (x - a - (i * d)) + c
     # print(F_i)
 
-    value = F_i(point)
-    print(i, point, c, value)
+    value = F_i(p)
+    # print(i, p, c, value)
 
+    interval = i
+    point = a + (interval * d)
     F_i_minus_1 = lambda x: f(point) * (x - a - (interval * d)) + c
     # print(F_i_minus_1)
     # print('==========\n')
 
-print(F_i(6))
+print(F_i(b))
 
 # INTEGRAL PLOT
 fig, (ax1, ax2) = plt.subplots(nrows=2, ncols=1)
