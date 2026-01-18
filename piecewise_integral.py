@@ -41,9 +41,9 @@ def PiecePolyCoefficients(x, y, a, i):
 
 f = lambda x: x ** 2
 a = 0
-b = 5
-precision = 1000
-x_domain = np.linspace(-10, 10, precision)
+b = 500
+precision = 10000
+x_domain = np.linspace(0, 500, precision)
 coefficents = [0, 0, 1]
 f_function = PolyCoefficients(x_domain, coefficents)
 
@@ -62,7 +62,7 @@ area_under_curve = integral(b) - integral(a)
 computed_areas = []
 approximation_plots = []
 interval = b - a
-subintervals = 50
+subintervals = 100
 print('True area under curve:\n', area_under_curve)
 
 for s in range(0, subintervals):
@@ -87,7 +87,7 @@ for s in range(0, subintervals):
 
 # Reinard Integral Approximation
 partitioned_plot_values = []
-subi = 50
+subi = 5
 breakpoint = precision // subi
 print('==========\n')
 print('breakpoint', breakpoint)
