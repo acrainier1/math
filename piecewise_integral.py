@@ -38,34 +38,18 @@ def PiecePolyCoefficients(x, y, a, i):
 
     return y
 
-def copy_func(f):
-    """
-    Creates a deep copy of a function.
-    """
-    # Create a new function object using the original function's code and globals
-    g = types.FunctionType(f.__code__, f.__globals__, name=f.__name__, 
-                           argdefs=f.__defaults__, closure=f.__closure__)
-    
-    # Update the new function's wrapper to preserve metadata
-    g = functools.update_wrapper(g, f)
-    
-    # Explicitly copy the function's __dict__ to duplicate any custom attributes
-    g.__dict__ = copy.deepcopy(f.__dict__)
-    
-    return g
-
 
 f = lambda x: x ** 2
 a = 0
 b = 5
-precision = 100000
+precision = 1000
 x_domain = np.linspace(-10, 10, precision)
 coefficents = [0, 0, 1]
 f_function = PolyCoefficients(x_domain, coefficents)
 
 
 # FUNCTION PLOT
-fig, (ax1, ax2, ax3) = plt.subplots(nrows=3, ncols=1)
+fig, (ax1, ax2, ax3, ax4) = plt.subplots(nrows=4, ncols=1)
 ax1.set_title('Function')
 ax1.plot(x_domain, f_function)
 
@@ -77,68 +61,74 @@ integral = lambda x: (1/3) * (x ** 3)
 area_under_curve = integral(b) - integral(a)
 computed_areas = []
 approximation_plots = []
+interval = b - a
+subintervals = 50
 print('True area under curve:\n', area_under_curve)
 
-# F_i_minus_1 = lambda x: f(a) * x  + c
-# F_i = lambda x: x
-# print('a:', a, ' b:',  b, ' c:', c)
-# print('==========\n')
-
-interval = b - a
-sub_intervals = 5
-
-for s in range(0, sub_intervals):
+for s in range(0, subintervals):
     c = 0 # constant of integration
     F_i_minus_1 = lambda x: f(a) * x  + c
     F_i = lambda x: x
     d = interval / (s + 1) # interval width
-
-    plot_values = []
-    # print('s', s)
+    plot_values = [F_i_minus_1(a)]
 
     for i in range(1, s + 1):
         p = a + (i * d)
         c = F_i_minus_1(p)
         F_i = lambda x: f(p) * (x - a - (i * d)) + c
-
         value = F_i(p)
         plot_values.append(value)
-        # print(i, p, c, value)
-
         subinterval = i
         point = a + (subinterval * d)
         F_i_minus_1 = lambda x: f(point) * (x - a - (subinterval * d)) + c
-        # print('==========\n')
 
     computed_areas.append(F_i(b))
     approximation_plots.append(plot_values)
-    # print('Computed area under curve:\n', F_i(b))
 
-print(len(computed_areas))
-computed_x_axis = list(range(sub_intervals))
-area_under_curve_constant = [area_under_curve] * sub_intervals
-# difference_in_areas = [a - b for a, b in zip(computed_areas, area_under_curve_constant)]
+# Reinard Integral Approximation
+partitioned_plot_values = []
+subi = 50
+breakpoint = precision // subi
+print('==========\n')
+print('breakpoint', breakpoint)
+# print(approximation_plots)
+
+j = 0
+
+for i in range(0, precision):
+    if i % breakpoint:
+        partitioned_plot_values.append(None)
+    else:
+        # print('j', j)
+        partitioned_plot_values.append(approximation_plots[subi - 1][j])
+        try:
+            partitioned_plot_values[i - 1] = approximation_plots[subi - 1][j]
+        except IndexError as e:
+            pass
+
+        j += 1
+
+# print(partitioned_plot_values)
+ax2.plot(x_domain, partitioned_plot_values, color='#FF0000')
+
+computed_x_axis = list(range(subintervals))
+area_under_curve_constant = [area_under_curve] * subintervals
 
 ax3.set_title('True area vs computed areas under curve')
 ax3.set_xlabel('Number of subintervals')
 ax3.plot(computed_x_axis, area_under_curve_constant, color='#4444AA')
 ax3.plot(computed_x_axis, computed_areas, color='#FFA500')
 
-print(approximation_plots[4])
-# ax3.plot(computed_x_axis, difference_in_areas, color='#44AA44')
-# ax3.spines['left'].set_position('center')
-# ax3.spines['bottom'].set_position('center')
-
 
 
 # INTEGRAL SEGMENTS
-# a = domain / sub_intervals # interval width
+# a = domain / subintervals # interval width
 # c = 0 # y intercept
 # F_i_minus_1 = PolyCoefficients(x_domain, [c])
 # print('domain:', domain, 'width a:', a)
 
-# for i in range(0, sub_intervals):
-#     ia = int(i * (precision / sub_intervals))
+# for i in range(0, subintervals):
+#     ia = int(i * (precision / subintervals))
 #     slope_f_x = f_function[ia]
 
 #     c = (-1 * slope_f_x) + F_i_minus_1[ia]
@@ -158,11 +148,11 @@ plt.show()
 # for c in range(-100, 100):
 #     # print('\n===========\n')
 #     # print('c:', c)
-#     for i in range(0, sub_intervals):
+#     for i in range(0, subintervals):
 #         a = x_start + (i * width)
 #         b = a + width
 #         # print('a, b:', a, b)
-#         linspace_segment = int(i * (precision / sub_intervals))
+#         linspace_segment = int(i * (precision / subintervals))
 #         slope_f_x = f_function[linspace_segment]
 #         # print('slope_f_x:', slope_f_x)
 #         integral_piece = AntiDerivativePolyCoefficients(x_domain, [c, slope_f_x], a, b)
